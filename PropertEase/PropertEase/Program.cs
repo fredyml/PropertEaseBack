@@ -1,6 +1,10 @@
 using PropertEase.Filters;
 using Serilog.Events;
 using Serilog;
+using MongoDB.Driver;
+using PropertEase.Application.Interfaces;
+using PropertEase.Application.Services;
+using PropertEase.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +34,14 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7)
     .CreateLogger();
+
+// Configuración de servicios
+builder.Services.AddSingleton<IMongoClient>(s =>
+    new MongoClient("mongodb://localhost:27017"));
+builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
+builder.Services.AddScoped<IPropertyService, PropertyService>();
+builder.Services.AddControllers();
+
 
 builder.Host.UseSerilog();
 
