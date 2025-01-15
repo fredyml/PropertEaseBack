@@ -4,7 +4,9 @@
   },
   "name": "Modern Apartment",
   "address": "456 Maple Avenue, Metropolis",
-  "price": 250000,
+  "price": {
+    "$numberDecimal": "250000"
+  },
   "codeInternal": "APT123",
   "year": 2021,
   "idOwner": {
@@ -30,7 +32,9 @@
   },
   "name": "Beachfront Villa",
   "address": "789 Ocean Drive",
-  "price": 500000,
+  "price": {
+    "$numberDecimal": "500000"
+  },
   "codeInternal": "VILLA456",
   "year": 2020,
   "idOwner": {
