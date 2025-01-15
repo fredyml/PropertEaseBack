@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Configurar CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAngularClient", policy =>
+    options.AddPolicy("Client", policy =>
     {
         policy.WithOrigins("http://localhost:3000")
               .AllowAnyMethod()
@@ -67,7 +67,7 @@ if (app.Environment.IsDevelopment())
 app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
-
+app.UseCors("Client");
 app.UseAuthorization();
 
 app.MapControllers();
