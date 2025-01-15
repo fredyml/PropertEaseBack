@@ -25,20 +25,34 @@ namespace PropertEase.Infrastructure.Repositories
         /// <summary>
         /// Obtiene una lista de propiedades filtradas y paginadas según los parámetros proporcionados.
         /// </summary>
-        /// <param name="name">El nombre de la propiedad para filtrar (opcional).</param>
-        /// <param name="address">La dirección de la propiedad para filtrar (opcional).</param>
-        /// <param name="minPrice">El precio mínimo para filtrar las propiedades (opcional).</param>
-        /// <param name="maxPrice">El precio máximo para filtrar las propiedades (opcional).</param>
-        /// <param name="page">El número de página para la paginación (opcional, por defecto es 1).</param>
-        /// <param name="pageSize">La cantidad de propiedades por página (opcional, por defecto es 10).</param>
-        /// <returns>Una lista de propiedades que cumplen con los filtros y están paginadas según el número de página y el tamaño de página.</returns>
         public async Task<IEnumerable<Property>> GetFilteredPropertiesAsync(
             string? name,
             string? address,
             decimal? minPrice,
             decimal? maxPrice,
-            int page,
-            int pageSize)
+            int page = 1,
+            int pageSize = 10)
+        {
+            var filterBuilder = BuildPropertyFilter(name, address, minPrice, maxPrice);
+            var properties = await GetPaginatedProperties(filterBuilder, page, pageSize);
+
+            if (properties == null || !properties.Any())
+            {
+                throw new PropertyNotFoundException("No properties were found matching the given filters.");
+            }
+
+            await EnrichPropertiesAsync(properties);
+            return properties;
+        }
+
+        /// <summary>
+        /// Construye el filtro para la búsqueda de propiedades.
+        /// </summary>
+        private FilterDefinition<Property> BuildPropertyFilter(
+            string? name,
+            string? address,
+            decimal? minPrice,
+            decimal? maxPrice)
         {
             var filterBuilder = Builders<Property>.Filter.Empty;
 
@@ -62,38 +76,58 @@ namespace PropertEase.Infrastructure.Repositories
                 filterBuilder &= Builders<Property>.Filter.Lte(p => p.Price, maxPrice.Value);
             }
 
-            var skip = (page - 1) * pageSize; 
-            var properties = await _properties.Find(filterBuilder)
-                                              .Skip(skip)       
-                                              .Limit(pageSize)   
-                                              .ToListAsync();
+            return filterBuilder;
+        }
 
-            if (properties == null || !properties.Any())
-            {
-                throw new PropertyNotFoundException("No properties were found matching the given filters.");
-            }
+        /// <summary>
+        /// Obtiene propiedades paginadas según el filtro proporcionado.
+        /// </summary>
+        private async Task<List<Property>> GetPaginatedProperties(
+            FilterDefinition<Property> filter,
+            int page,
+            int pageSize)
+        {
+            var skip = (page - 1) * pageSize;
+            return await _properties.Find(filter)
+                                    .Skip(skip)
+                                    .Limit(pageSize)
+                                    .ToListAsync();
+        }
 
-
+        /// <summary>
+        /// Enriquecemos las propiedades con imágenes, trazas y propietario.
+        /// </summary>
+        private async Task EnrichPropertiesAsync(IEnumerable<Property> properties)
+        {
             foreach (var property in properties)
             {
-                property.Images = await GetImagesByIdsAsync(property.ImageIds);
+                if (property.Images.Count == 0)
+                    property.Images.Add(await GetImagesByIdsAsync(property.ImageIds));
+
                 property.Traces = await GetTracesByIdsAsync(property.TraceIds);
                 property.Owner = await GetOwnerByIdAsync(property.IdOwner);
             }
-
-            return properties;
         }
 
-        private async Task<List<PropertyImage>> GetImagesByIdsAsync(IEnumerable<ObjectId> imageIds)
+        /// <summary>
+        /// Obtiene las imágenes por los identificadores proporcionados.
+        /// </summary>
+        private async Task<PropertyImage> GetImagesByIdsAsync(IEnumerable<ObjectId> imageIds)
         {
-            return await _images.Find(img => imageIds.Contains(img.Id)).ToListAsync();
+            return await _images.Find(img => imageIds.Contains(img.Id)).FirstOrDefaultAsync();
         }
 
+        /// <summary>
+        /// Obtiene las trazas por los identificadores proporcionados.
+        /// </summary>
         private async Task<List<PropertyTrace>> GetTracesByIdsAsync(IEnumerable<ObjectId> traceIds)
         {
             return await _traces.Find(trace => traceIds.Contains(trace.Id)).ToListAsync();
         }
 
+        /// <summary>
+        /// Obtiene el propietario por el identificador proporcionado.
+        /// </summary>
         private async Task<Owner> GetOwnerByIdAsync(ObjectId ownerId)
         {
             return await _owners.Find(o => o.Id == ownerId).FirstOrDefaultAsync();
