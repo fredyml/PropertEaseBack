@@ -27,6 +27,8 @@ namespace PropertEase.Controllers
         /// <param name="address">Dirección de la propiedad (opcional)</param>
         /// <param name="minPrice">Precio mínimo de la propiedad (opcional)</param>
         /// <param name="maxPrice">Precio máximo de la propiedad (opcional)</param>
+        /// <param name="page">El número de página para la paginación (opcional, por defecto es 1).</param>
+        /// <param name="pageSize">La cantidad de propiedades por página (opcional, por defecto es 10).</param>
         /// <returns>Lista de propiedades que cumplen con los filtros especificados</returns>
         /// <response code="200">Devuelve la lista de propiedades</response>
         /// <response code="400">Si los parámetros de entrada no son válidos</response>
@@ -37,13 +39,19 @@ namespace PropertEase.Controllers
         [SwaggerResponse(400, "Parámetros de entrada no válidos.")]
         [SwaggerResponse(500, "Error interno del servidor.")]
         public async Task<IActionResult> GetProperties(
-            [FromQuery] string? name = null,
-            [FromQuery] string? address = null,
-            [FromQuery] decimal? minPrice = null,
-            [FromQuery] decimal? maxPrice = null)
+           [FromQuery] string? name = null,
+           [FromQuery] string? address = null,
+           [FromQuery] decimal? minPrice = null,
+           [FromQuery] decimal? maxPrice = null,
+           [FromQuery] int? page = null,       
+           [FromQuery] int? pageSize = null)  
         {
-            var properties = await _propertyService.GetFilteredPropertiesAsync(name, address, minPrice, maxPrice);
+            if (!page.HasValue) page = 1;     
+            if (!pageSize.HasValue) pageSize = 10;
+
+            var properties = await _propertyService.GetFilteredPropertiesAsync(name, address, minPrice, maxPrice, page.Value, pageSize.Value);
             return Ok(properties);
         }
+
     }
 }

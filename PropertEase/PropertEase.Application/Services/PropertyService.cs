@@ -27,6 +27,8 @@ namespace PropertEase.Application.Services
         /// <param name="address">La dirección de la propiedad para filtrar (opcional).</param>
         /// <param name="minPrice">El precio mínimo para filtrar las propiedades (opcional).</param>
         /// <param name="maxPrice">El precio máximo para filtrar las propiedades (opcional).</param>
+        /// <param name="page">El número de página para la paginación (opcional, por defecto es 1).</param>
+        /// <param name="pageSize">La cantidad de propiedades por página (opcional, por defecto es 10).</param>
         /// <returns>Una lista de objetos <see cref="PropertyDto"/> que cumplen con los filtros especificados.</returns>
         /// <remarks>
         /// Este método consulta el repositorio de propiedades y aplica los filtros indicados
@@ -41,9 +43,11 @@ namespace PropertEase.Application.Services
             string? name,
             string? address,
             decimal? minPrice,
-            decimal? maxPrice)
+            decimal? maxPrice,
+            int page,
+            int pageSize)
         {
-            var properties = await _propertyRepository.GetFilteredPropertiesAsync(name, address, minPrice, maxPrice);
+            var properties = await _propertyRepository.GetFilteredPropertiesAsync(name, address, minPrice, maxPrice, page, pageSize);
             return _mapper.Map<IEnumerable<PropertyDto>>(properties);
         }
     }
