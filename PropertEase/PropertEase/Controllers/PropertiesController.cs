@@ -1,34 +1,38 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using PropertEase.Application.Interfaces;
-using Serilog;
 
 namespace PropertEase.Controllers
 {
-    // Controlador
     [ApiController]
     [Route("api/properties")]
     public class PropertiesController : ControllerBase
     {
-        private readonly IPropertyService _service;
+        private readonly IPropertyService _propertyService;
 
-        public PropertiesController(IPropertyService service)
+        public PropertiesController(IPropertyService propertyService)
         {
-            _service = service;
+            _propertyService = propertyService;
+        }
+
+        [HttpGet("{idProperty}")]
+        public async Task<IActionResult> GetPropertyById(string idProperty)
+        {
+            if (!ObjectId.TryParse(idProperty, out var objectId))
+                return BadRequest(new { Message = "Invalid ID format." });
+
+            var property = await _propertyService.GetPropertyByIdAsync(objectId);
+            if (property == null)
+                return NotFound(new { Message = "Property not found." });
+
+            return Ok(property);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] string name, [FromQuery] string address, [FromQuery] decimal? minPrice, [FromQuery] decimal? maxPrice)
+        public async Task<IActionResult> GetAllProperties()
         {
-            try
-            {
-                var properties = await _service.GetPropertiesAsync(name, address, minPrice, maxPrice);
-                return Ok(properties);
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Error en el controlador");
-                return StatusCode(500, "Ocurrió un error interno");
-            }
+            var properties = await _propertyService.GetAllPropertiesAsync();
+            return Ok(properties);
         }
     }
 }

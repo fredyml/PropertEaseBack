@@ -42,7 +42,6 @@ builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
 builder.Services.AddScoped<IPropertyService, PropertyService>();
 builder.Services.AddControllers();
 
-
 builder.Host.UseSerilog();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -1,9 +1,11 @@
 ﻿using PropertEase.Domain.Entities;
+using MongoDB.Bson;
 
 namespace PropertEase.Application.Interfaces
 {
     public interface IPropertyRepository
     {
-        Task<IEnumerable<Property>> GetPropertiesAsync(string name, string address, decimal? minPrice, decimal? maxPrice);
+        Task<Property> GetPropertyByIdAsync(ObjectId id);  
+        Task<IEnumerable<Property>> GetAllPropertiesAsync();
     }
 }
