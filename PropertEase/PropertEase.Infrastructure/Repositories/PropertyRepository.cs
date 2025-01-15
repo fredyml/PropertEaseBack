@@ -21,22 +21,31 @@ namespace PropertEase.Infrastructure.Repositories
             _traces = database.GetCollection<PropertyTrace>("PropertyTraces");
         }
 
-        public async Task<Property> GetPropertyByIdAsync(ObjectId idProperty)
+        public async Task<IEnumerable<Property>> GetFilteredPropertiesAsync(string? name, string? address, decimal? minPrice,decimal? maxPrice)
         {
-            var property = await _properties.Find(p => p.Id == idProperty).FirstOrDefaultAsync();
+            var filterBuilder = Builders<Property>.Filter.Empty;
 
-            if (property == null) return null;
+            if (!string.IsNullOrEmpty(name))
+            {
+                filterBuilder &= Builders<Property>.Filter.Regex(p => p.Name, new BsonRegularExpression(name, "i"));
+            }
 
-            property.Images = await GetImagesByIdsAsync(property.ImageIds);
-            property.Traces = await GetTracesByIdsAsync(property.TraceIds);
-            property.Owner = await GetOwnerByIdAsync(property.IdOwner);
+            if (!string.IsNullOrEmpty(address))
+            {
+                filterBuilder &= Builders<Property>.Filter.Regex(p => p.Address, new BsonRegularExpression(address, "i"));
+            }
 
-            return property;
-        }
+            if (minPrice.HasValue)
+            {
+                filterBuilder &= Builders<Property>.Filter.Gte(p => p.Price, minPrice.Value);
+            }
 
-        public async Task<IEnumerable<Property>> GetAllPropertiesAsync()
-        {
-            var properties = await _properties.Find(FilterDefinition<Property>.Empty).ToListAsync();
+            if (maxPrice.HasValue)
+            {
+                filterBuilder &= Builders<Property>.Filter.Lte(p => p.Price, maxPrice.Value);
+            }
+
+            var properties = await _properties.Find(filterBuilder).ToListAsync();
 
             foreach (var property in properties)
             {
@@ -47,6 +56,7 @@ namespace PropertEase.Infrastructure.Repositories
 
             return properties;
         }
+
 
         private async Task<List<PropertyImage>> GetImagesByIdsAsync(IEnumerable<ObjectId> imageIds)
         {

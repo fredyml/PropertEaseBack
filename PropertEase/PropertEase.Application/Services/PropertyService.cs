@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using MongoDB.Bson;
 using PropertEase.Application.Dtos;
 using PropertEase.Application.Interfaces;
 
@@ -15,17 +14,13 @@ namespace PropertEase.Application.Services
             _propertyRepository = propertyRepository;
             _mapper = mapper;
         }
+       
 
-        public async Task<PropertyDto?> GetPropertyByIdAsync(ObjectId id)
+        public async Task<IEnumerable<PropertyDto>> GetFilteredPropertiesAsync(string? name, string? address,decimal? minPrice,decimal? maxPrice)
         {
-            var property = await _propertyRepository.GetPropertyByIdAsync(id);
-            return property == null ? null : _mapper.Map<PropertyDto>(property);
-        }
-
-        public async Task<IEnumerable<PropertyDto>> GetAllPropertiesAsync()
-        {
-            var properties = await _propertyRepository.GetAllPropertiesAsync();
+            var properties = await _propertyRepository.GetFilteredPropertiesAsync(name, address, minPrice, maxPrice);
             return _mapper.Map<IEnumerable<PropertyDto>>(properties);
         }
+
     }
 }

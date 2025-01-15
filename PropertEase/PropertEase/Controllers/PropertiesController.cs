@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 using PropertEase.Application.Interfaces;
 
 namespace PropertEase.Controllers
@@ -14,25 +13,14 @@ namespace PropertEase.Controllers
         {
             _propertyService = propertyService;
         }
-
-        [HttpGet("{idProperty}")]
-        public async Task<IActionResult> GetPropertyById(string idProperty)
-        {
-            if (!ObjectId.TryParse(idProperty, out var objectId))
-                return BadRequest(new { Message = "Invalid ID format." });
-
-            var property = await _propertyService.GetPropertyByIdAsync(objectId);
-            if (property == null)
-                return NotFound(new { Message = "Property not found." });
-
-            return Ok(property);
-        }
+        
 
         [HttpGet]
-        public async Task<IActionResult> GetAllProperties()
+        public async Task<IActionResult> GetProperties( string? name = null,string? address = null,decimal? minPrice = null, decimal? maxPrice = null)
         {
-            var properties = await _propertyService.GetAllPropertiesAsync();
+            var properties = await _propertyService.GetFilteredPropertiesAsync(name, address, minPrice, maxPrice);
             return Ok(properties);
         }
+
     }
 }
