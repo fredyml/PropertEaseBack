@@ -67,13 +67,13 @@ PropertEase/
 
 1. [.NET 8.0 SDK](https://dotnet.microsoft.com/download)
 2. [MongoDB](https://www.mongodb.com/try/download/community)
-3. [Node.js y Angular CLI](https://nodejs.org/en/) (si utilizas un frontend Angular)
+3. [Node.js y React.js](https://nodejs.org/en/) (si utilizas un frontend React.Js)
 
 ### Pasos
 
 1. Clonar el repositorio:
    ```bash
-   git clone https://github.com/username/PropertEase.git
+   git clone https://github.com/fredyml/PropertEaseBack.git
    cd PropertEase
    ```
 
