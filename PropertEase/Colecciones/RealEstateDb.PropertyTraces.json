@@ -1,0 +1,11 @@
+[{
+  "_id": {
+    "$oid": "60b8d8fe3e5b4b47a4d76cfc"
+  },
+  "dateSale": {
+    "$date": "2022-01-15T00:00:00.000Z"
+  },
+  "name": "First Sale",
+  "value": 240000,
+  "tax": 5000
+}]

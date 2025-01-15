@@ -1,0 +1,11 @@
+[{
+  "_id": {
+    "$oid": "60b8d8fe3e5b4b47a4d76cf7"
+  },
+  "name": "John Doe",
+  "address": "123 Elm Street",
+  "photo": "johndoe.jpg",
+  "birthday": {
+    "$date": "1980-05-10T00:00:00.000Z"
+  }
+}]

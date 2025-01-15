@@ -1,0 +1,21 @@
+[{
+  "_id": {
+    "$oid": "60b8d8fe3e5b4b47a4d76cfa"
+  },
+  "file": "image1.jpg",
+  "enabled": true
+},
+{
+  "_id": {
+    "$oid": "60b8d8fe3e5b4b47a4d76cfb"
+  },
+  "file": "image2.jpg",
+  "enabled": true
+},
+{
+  "_id": {
+    "$oid": "60b8d8fe3e5b4b47a4d76cfd"
+  },
+  "file": "beachfront_image.jpg",
+  "enabled": true
+}]

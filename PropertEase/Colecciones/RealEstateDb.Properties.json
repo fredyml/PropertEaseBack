@@ -1,0 +1,45 @@
+[{
+  "_id": {
+    "$oid": "60b8d8fe3e5b4b47a4d76cf8"
+  },
+  "name": "Modern Apartment",
+  "address": "456 Maple Avenue, Metropolis",
+  "price": 250000,
+  "codeInternal": "APT123",
+  "year": 2021,
+  "idOwner": {
+    "$oid": "60b8d8fe3e5b4b47a4d76cf7"
+  },
+  "imageIds": [
+    {
+      "$oid": "60b8d8fe3e5b4b47a4d76cfa"
+    },
+    {
+      "$oid": "60b8d8fe3e5b4b47a4d76cfb"
+    }
+  ],
+  "traceIds": [
+    {
+      "$oid": "60b8d8fe3e5b4b47a4d76cfc"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "60b8d8fe3e5b4b47a4d76cf9"
+  },
+  "name": "Beachfront Villa",
+  "address": "789 Ocean Drive",
+  "price": 500000,
+  "codeInternal": "VILLA456",
+  "year": 2020,
+  "idOwner": {
+    "$oid": "60b8d8fe3e5b4b47a4d76cf7"
+  },
+  "imageIds": [
+    {
+      "$oid": "60b8d8fe3e5b4b47a4d76cfd"
+    }
+  ],
+  "traceIds": []
+}]
