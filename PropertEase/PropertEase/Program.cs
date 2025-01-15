@@ -5,6 +5,7 @@ using MongoDB.Driver;
 using PropertEase.Application.Interfaces;
 using PropertEase.Application.Services;
 using PropertEase.Infrastructure.Repositories;
+using PropertEase.Application.Mapping;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,8 @@ builder.Services.AddControllers(options =>
 {
     options.Filters.Add<GlobalExceptionFilter>();
 });
+
+builder.Services.AddAutoMapper(typeof(PropertyProfile).Assembly);
 
 // Configuración de Serilog
 Log.Logger = new LoggerConfiguration()
