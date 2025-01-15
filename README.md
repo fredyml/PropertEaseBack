@@ -65,7 +65,7 @@ PropertEase/
 
 ### Requisitos Previos
 
-1. [.NET 6.0 SDK](https://dotnet.microsoft.com/download)
+1. [.NET 8.0 SDK](https://dotnet.microsoft.com/download)
 2. [MongoDB](https://www.mongodb.com/try/download/community)
 3. [Node.js y Angular CLI](https://nodejs.org/en/) (si utilizas un frontend Angular)
 
