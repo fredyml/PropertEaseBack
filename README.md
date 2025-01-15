@@ -88,8 +88,9 @@ PropertEase/
        "MongoDb": "mongodb://localhost:27017"
    }
    ```
-
-4. Ejecutar la aplicación:
+4. Restaurar las colecciones de la base de datos ubicadas en: https://github.com/fredyml/PropertEaseBack/tree/main/PropertEase/Colecciones
+   
+5. Ejecutar la aplicación:
    ```bash
    dotnet run
    ```
