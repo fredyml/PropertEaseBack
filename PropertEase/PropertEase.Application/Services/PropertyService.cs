@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using PropertEase.Application.Dtos;
 using PropertEase.Application.Interfaces;
-using PropertEase.Domain.Exceptions;
 
 namespace PropertEase.Application.Services
 {
@@ -43,11 +42,6 @@ namespace PropertEase.Application.Services
         public async Task<IEnumerable<PropertyDto>> GetFilteredPropertiesAsync( string? name,string? address,decimal? minPrice, decimal? maxPrice,int page,int pageSize)
         {
             var properties = await _propertyRepository.GetFilteredPropertiesAsync(name, address, minPrice, maxPrice, page, pageSize);
-
-            if (!properties.Any())  
-            {
-                throw new PropertyNotFoundException("No properties were found matching the given filters.");
-            }
 
             return _mapper.Map<IEnumerable<PropertyDto>>(properties);
         }

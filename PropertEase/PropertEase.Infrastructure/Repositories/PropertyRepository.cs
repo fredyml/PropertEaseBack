@@ -3,6 +3,7 @@ using MongoDB.Driver;
 using PropertEase.Application.Interfaces;
 using PropertEase.Domain.Entities;
 using PropertEase.Domain.Exceptions;
+using ZstdSharp;
 
 namespace PropertEase.Infrastructure.Repositories
 {
@@ -36,10 +37,6 @@ namespace PropertEase.Infrastructure.Repositories
             var filterBuilder = BuildPropertyFilter(name, address, minPrice, maxPrice);
             var properties = await GetPaginatedProperties(filterBuilder, page, pageSize);
 
-            if (properties == null || !properties.Any())
-            {
-                throw new PropertyNotFoundException("No properties were found matching the given filters.");
-            }
 
             await EnrichPropertiesAsync(properties);
             return properties;
@@ -74,6 +71,11 @@ namespace PropertEase.Infrastructure.Repositories
             if (maxPrice.HasValue)
             {
                 filterBuilder &= Builders<Property>.Filter.Lte(p => p.Price, maxPrice.Value);
+            }
+
+            if (minPrice.HasValue && maxPrice.HasValue && minPrice.Value > maxPrice.Value)
+            {
+                throw new PropertyNotFoundException("El precio mínimo no puede ser mayor que el precio máximo.");
             }
 
             return filterBuilder;

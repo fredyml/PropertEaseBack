@@ -16,7 +16,7 @@ namespace PropertEase.Domain.Entities
         public string Address { get; set; }
 
         [BsonElement("price")]
-        public decimal Price { get; set; }
+        public Decimal128 Price { get; set; }
 
         [BsonElement("codeInternal")]
         public string CodeInternal { get; set; }
