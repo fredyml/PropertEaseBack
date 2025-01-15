@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
 using PropertEase.Domain.Exceptions;
-using PropertEase.Models;
-using Serilog;
 using System.Net;
+using Serilog;
+using Microsoft.AspNetCore.Mvc;
+using PropertEase.Models;
 
 namespace PropertEase.Filters
 {
@@ -11,40 +11,22 @@ namespace PropertEase.Filters
     {
         public void OnException(ExceptionContext context)
         {
-            _ = new ErrorResponse();
-
             ErrorResponse? errorResponse;
-            if (context.Exception is DataValidationException customEx)
+
+            if (context.Exception is PropertyNotFoundException notFoundEx)
             {
                 errorResponse = new ErrorResponse
                 {
-                    Message = "Se ha producido un error al procesar su solicitud.",
-                    Details = customEx.Message
+                    Message = "Propiedad no encontrada.",
+                    Details = notFoundEx.Message
                 };
 
                 context.Result = new JsonResult(errorResponse)
                 {
-                    StatusCode = (int)HttpStatusCode.Conflict
+                    StatusCode = (int)HttpStatusCode.NotFound
                 };
 
-                Log.Error($"Se produjo un error de validación personalizada: {customEx.Message}, ErrorCode: {customEx.ErrorCode}");
-            }
-
-            else if (context.Exception is ArgumentException invalidOpEx)
-            {
-                errorResponse = new ErrorResponse
-                {
-                    Message = "Operación no válida.",
-                    Details = invalidOpEx.Message
-                };
-
-                context.Result = new JsonResult(errorResponse)
-                {
-                    StatusCode = (int)HttpStatusCode.BadRequest
-                };
-
-
-                Log.Error($"Se produjo una operación no válida: {invalidOpEx.Message}");
+                Log.Error($"Propiedad no encontrada: {notFoundEx.Message}");
             }
             else
             {

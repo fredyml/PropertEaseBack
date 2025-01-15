@@ -2,6 +2,7 @@
 using MongoDB.Driver;
 using PropertEase.Application.Interfaces;
 using PropertEase.Domain.Entities;
+using PropertEase.Domain.Exceptions;
 
 namespace PropertEase.Infrastructure.Repositories
 {
@@ -67,7 +68,12 @@ namespace PropertEase.Infrastructure.Repositories
                                               .Limit(pageSize)   
                                               .ToListAsync();
 
-            
+            if (properties == null || !properties.Any())
+            {
+                throw new PropertyNotFoundException("No properties were found matching the given filters.");
+            }
+
+
             foreach (var property in properties)
             {
                 property.Images = await GetImagesByIdsAsync(property.ImageIds);
